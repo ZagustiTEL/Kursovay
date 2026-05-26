@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center;">
+    <h1>🚌 Добро пожаловать на сайт автовокзала</h1>
+    <p style="margin-top: 1rem; color: #666;">Удобная покупка билетов онлайн. Актуальное расписание. Надёжные перевозчики.</p>
+    
+    <div style="margin-top: 2rem;">
+        <a href="/search" class="btn" style="margin-right: 1rem;">🔍 Найти билет</a>
+        <a href="/schedule" class="btn">📅 Расписание рейсов</a>
+    </div>
+</div>
+
+
+
+<div class="card">
+    <h2>Популярные направления</h2>
+    <ul style="margin-top: 1rem; list-style: none;">
+        <li style="padding: 0.5rem 0;">🚌 Москва → Санкт-Петербург</li>
+        <li style="padding: 0.5rem 0;">🚌 Москва → Нижний Новгород</li>
+        <li style="padding: 0.5rem 0;">🚌 Казань → Москва</li>
+        <li style="padding: 0.5rem 0;">🚌 Москва → Ярославль</li>
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Добавление рейса{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>➕ Добавление рейса в расписание</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label>Выберите маршрут:</label>
+            <select name="route_id" required>
+                <option value="">-- Выберите маршрут --</option>
+                {% for route in routes %}
+                <option value="{{ route.route_id }}">
+                    {{ route.route_number }}: {{ route.departure_city }} → {{ route.arrival_city }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Выберите автобус:</label>
+            <select name="bus_id" required>
+                <option value="">-- Выберите автобус --</option>
+                {% for bus in buses %}
+                <option value="{{ bus.bus_id }}">
+                    {{ bus.license_plate }} - {{ bus.model }} (вместимость: {{ bus.capacity }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Выберите водителя:</label>
+            <select name="driver_id" required>
+                <option value="">-- Выберите водителя --</option>
+                {% for driver in drivers %}
+                <option value="{{ driver.driver_id }}">
+                    {{ driver.last_name }} {{ driver.first_name }} (стаж: {{ driver.experience_years }} лет)
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Дата и время отправления:</label>
+            <input type="datetime-local" name="departure_time" required>
+        </div>
+        
+        <button type="submit" class="btn">➕ Добавить рейс</button>
+        <a href="/admin/routes" class="btn" style="background: #718096;">← Назад</a>
+    </form>
+</div>
+{% endblock %}

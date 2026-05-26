@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Управление пользователями{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>👥 Управление пользователями</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя пользователя</th>
+                <th>Полное имя</th>
+                <th>Email</th>
+                <th>Телефон</th>
+                <th>Роль</th>
+                <th>Дата регистрации</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td data-label="ID">{{ user.user_id }}</td>
+                <td data-label="Имя пользователя">
+                    {{ user.username }}
+                    {% if user.username == 'admin' %}
+                        <span class="badge badge-success">👑</span>
+                    {% endif %}
+                </td>
+                <td data-label="Полное имя">{{ user.full_name or '—' }}</td>
+                <td data-label="Email">{{ user.email or '—' }}</td>
+                <td data-label="Телефон">{{ user.phone or '—' }}</td>
+                <td data-label="Роль">
+                    {% if user.role == 'admin' %}
+                        <span class="badge badge-success">Админ</span>
+                    {% else %}
+                        <span class="badge">Пользователь</span>
+                    {% endif %}
+                </td>
+                <td data-label="Дата регистрации">{{ user.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

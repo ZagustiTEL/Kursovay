@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Покупка билета{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🎫 Оформление билета</h2>
+    
+    <div style="background: #f7fafc; padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+        <p><strong>Рейс:</strong> {{ schedule.route_number }} ({{ schedule.departure_city }} → {{ schedule.arrival_city }})</p>
+        <p><strong>Отправление:</strong> {{ schedule.departure_time }}</p>
+        <p><strong>Прибытие:</strong> {{ schedule.arrival_time }}</p>
+        <p><strong>Автобус:</strong> {{ schedule.license_plate }}</p>
+        <p><strong>Цена билета:</strong> {{ schedule.base_price }} ₽</p>
+        <p><strong>Свободных мест:</strong> {{ schedule.available_seats }}</p>
+    </div>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label>ФИО пассажира *:</label>
+            <input type="text" name="passenger_name" required placeholder="Иванов Иван Иванович">
+        </div>
+        
+        <div class="form-group">
+            <label>Номер паспорта *:</label>
+            <input type="text" name="passport_number" required placeholder="45 12 345678">
+        </div>
+        
+        <div class="form-group">
+            <label>Телефон *:</label>
+            <input type="tel" name="phone" required placeholder="+7 XXX XXX-XX-XX">
+        </div>
+        
+        <div class="form-group">
+            <label>Количество билетов:</label>
+            <input type="number" name="seat_count" value="1" min="1" max="{{ schedule.available_seats }}">
+        </div>
+        
+        <button type="submit" class="btn">✅ Оплатить и купить</button>
+        <a href="/schedule" class="btn" style="background: #718096;">← Назад к расписанию</a>
+    </form>
+</div>
+{% endblock %}

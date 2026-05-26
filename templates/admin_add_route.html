@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Добавление маршрута{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 700px; margin: 0 auto;">
+    <h2>➕ Добавление нового маршрута</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label>Номер маршрута *:</label>
+            <input type="text" name="route_number" required placeholder="Например: 108">
+            <small style="color: #666;">Уникальный номер маршрута</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Город отправления *:</label>
+            <input type="text" name="departure_city" required placeholder="Например: Москва">
+        </div>
+        
+        <div class="form-group">
+            <label>Город прибытия *:</label>
+            <input type="text" name="arrival_city" required placeholder="Например: Казань">
+        </div>
+        
+        <div class="form-group">
+            <label>Расстояние (км):</label>
+            <input type="number" name="distance_km" placeholder="Например: 820" step="1">
+        </div>
+        
+        <div class="form-group">
+            <label>Время в пути (минуты) *:</label>
+            <input type="number" name="travel_time_minutes" required placeholder="Например: 600">
+            <small style="color: #666;">Пример: 600 минут = 10 часов</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Базовая цена (руб.) *:</label>
+            <input type="number" name="base_price" required placeholder="Например: 1800" step="0.01">
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <button type="submit" class="btn">✅ Добавить маршрут</button>
+            <a href="/admin/routes" class="btn" style="background: #718096;">← Назад к маршрутам</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

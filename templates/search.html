@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Поиск билетов{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🔍 Поиск билетов</h2>
+    
+    <form method="POST" action="/search">
+        <div class="form-group">
+            <label>Откуда:</label>
+            <input type="text" name="from_city" required placeholder="Например: Москва">
+        </div>
+        
+        <div class="form-group">
+            <label>Куда:</label>
+            <input type="text" name="to_city" required placeholder="Например: Санкт-Петербург">
+        </div>
+        
+        <div class="form-group">
+            <label>Дата поездки:</label>
+            <input type="date" name="travel_date" required>
+        </div>
+        
+        <button type="submit" class="btn">🔍 Найти билеты</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>💡 Популярные направления</h3>
+    <ul style="margin-top: 1rem;">
+        <li>🚌 Москва → Санкт-Петербург</li>
+        <li>🚌 Москва → Нижний Новгород</li>
+        <li>🚌 Москва → Казань</li>
+        <li>🚌 Москва → Ярославль</li>
+    </ul>
+</div>
+{% endblock %}
