@@ -1,27 +1,338 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Автовокзал - Система управления</title>
+</head>
+<body>
+    <div class="container">
+        <h1> Система управления автовокзалом</h1>
 
-{% block title %}Главная{% endblock %}
+        <div class="stats">
+            <div class="stat-card">
+                <h3>{{ routes|length }}</h3>
+                <p>Маршрутов</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ drivers|length }}</h3>
+                <p>Водителей</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ buses|length }}</h3>
+                <p>Автобусов</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ passengers|length }}</h3>
+                <p>Пассажиров</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ schedule|length }}</h3>
+                <p>Рейсов</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ tickets|length }}</h3>
+                <p>Билетов продано</p>
+            </div>
+        </div>
 
-{% block content %}
-<div class="card" style="text-align: center;">
-    <h1>🚌 Добро пожаловать на сайт автовокзала</h1>
-    <p style="margin-top: 1rem; color: #666;">Удобная покупка билетов онлайн. Актуальное расписание. Надёжные перевозчики.</p>
-    
-    <div style="margin-top: 2rem;">
-        <a href="/search" class="btn" style="margin-right: 1rem;">🔍 Найти билет</a>
-        <a href="/schedule" class="btn">📅 Расписание рейсов</a>
+        <div class="section">
+            <h2> Добавить маршрут</h2>
+            <div class="form-container">
+                <form method="POST" action="/add_route">
+                    <div class="form-group">
+                        <label>Номер маршрута:</label>
+                        <input type="text" name="route_number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Город отправления:</label>
+                        <input type="text" name="departure_city" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Город прибытия:</label>
+                        <input type="text" name="arrival_city" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Расстояние (км):</label>
+                        <input type="number" name="distance_km">
+                    </div>
+                    <div class="form-group">
+                        <label>Время в пути (мин):</label>
+                        <input type="number" name="travel_time_minutes">
+                    </div>
+                    <button type="submit">Добавить маршрут</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2> Добавить рейс в расписание</h2>
+            <div class="form-container">
+                <form method="POST" action="/add_schedule">
+                    <div class="form-group">
+                        <label>Автобус:</label>
+                        <select name="bus_id" required>
+                            {% for bus in buses %}
+                            <option value="{{ bus.bus_id }}">{{ bus.license_plate }} ({{ bus.model }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Водитель:</label>
+                        <select name="driver_id" required>
+                            {% for driver in drivers %}
+                            <option value="{{ driver.driver_id }}">{{ driver.last_name }} {{ driver.first_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Маршрут:</label>
+                        <select name="route_id" required>
+                            {% for route in routes %}
+                            <option value="{{ route.route_id }}">{{ route.route_number }}: {{ route.departure_city }} → {{ route.arrival_city }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Время отправления:</label>
+                        <input type="datetime-local" name="departure_time" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Время прибытия:</label>
+                        <input type="datetime-local" name="arrival_time" required>
+                    </div>
+                    <button type="submit">Добавить рейс</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2> Добавить пассажира</h2>
+            <div class="form-container">
+                <form method="POST" action="/add_passenger">
+                    <div class="form-group">
+                        <label>Имя:</label>
+                        <input type="text" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Фамилия:</label>
+                        <input type="text" name="last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Отчество:</label>
+                        <input type="text" name="middle_name">
+                    </div>
+                    <div class="form-group">
+                        <label>Номер паспорта:</label>
+                        <input type="text" name="passport_number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Телефон:</label>
+                        <input type="text" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" name="email">
+                    </div>
+                    <button type="submit">Добавить пассажира</button>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="section">
+            <h2> Маршруты</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Номер</th>
+                        <th>Откуда</th>
+                        <th>Куда</th>
+                        <th>Расстояние (км)</th>
+                        <th>Время в пути</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for route in routes %}
+                    <tr>
+                        <td>{{ route.route_id }}</td>
+                        <td>{{ route.route_number }}</td>
+                        <td>{{ route.departure_city }}</td>
+                        <td>{{ route.arrival_city }}</td>
+                        <td>{{ route.distance_km or '-' }}</td>
+                        <td>{{ route.travel_time_minutes or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2> Водители</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Отчество</th>
+                        <th>Номер лицензии</th>
+                        <th>Стаж</th>
+                        <th>Телефон</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for driver in drivers %}
+                    <tr>
+                        <td>{{ driver.driver_id }}</td>
+                        <td>{{ driver.first_name }}</td>
+                        <td>{{ driver.last_name }}</td>
+                        <td>{{ driver.middle_name or '-' }}</td>
+                        <td>{{ driver.license_number }}</td>
+                        <td>{{ driver.experience_years }} лет</td>
+                        <td>{{ driver.phone or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2> Автобусы</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Гос номер</th>
+                        <th>Модель</th>
+                        <th>Вместимость</th>
+                        <th>Год выпуска</th>
+                        <th>Состояние</th>
+                        <th>Водитель</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bus in buses %}
+                    <tr>
+                        <td>{{ bus.bus_id }}</td>
+                        <td>{{ bus.license_plate }}</td>
+                        <td>{{ bus.model or '-' }}</td>
+                        <td>{{ bus.capacity }}</td>
+                        <td>{{ bus.manufacture_year or '-' }}</td>
+                        <td>
+                            <span class="badge {% if bus.bus_condition == 'исправен' %}badge-success{% else %}badge-danger{% endif %}">
+                                {{ bus.bus_condition }}
+                            </span>
+                        </td>
+                        <td>{{ bus.first_name or '' }} {{ bus.last_name or '' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2> Пассажиры</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Отчество</th>
+                        <th>Паспорт</th>
+                        <th>Телефон</th>
+                        <th>Email</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for passenger in passengers %}
+                    <tr>
+                        <td>{{ passenger.passenger_id }}</td>
+                        <td>{{ passenger.first_name }}</td>
+                        <td>{{ passenger.last_name }}</td>
+                        <td>{{ passenger.middle_name or '-' }}</td>
+                        <td>{{ passenger.passport_number }}</td>
+                        <td>{{ passenger.phone or '-' }}</td>
+                        <td>{{ passenger.email or '-' }}</td>
+                        <td>
+                            <a href="/delete_passenger/{{ passenger.passenger_id }}" class="delete-btn" onclick="return confirm('Удалить пассажира? Это удалит все его билеты!')"> Удалить</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2> Расписание рейсов</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Маршрут</th>
+                        <th>Автобус</th>
+                        <th>Водитель</th>
+                        <th>Отправление</th>
+                        <th>Прибытие</th>
+                        <th>Статус</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in schedule %}
+                    <tr>
+                        <td>{{ s.schedule_id }}</td>
+                        <td>{{ s.route_number }}: {{ s.departure_city }} → {{ s.arrival_city }}</td>
+                        <td>{{ s.license_plate }}</td>
+                        <td>{{ s.first_name }} {{ s.last_name }}</td>
+                        <td>{{ s.departure_time }}</td>
+                        <td>{{ s.arrival_time }}</td>
+                        <td>
+                            <span class="badge {% if s.schedule_status == 'запланирован' %}badge-success{% else %}badge-warning{% endif %}">
+                                {{ s.schedule_status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/delete_schedule/{{ s.schedule_id }}" class="delete-btn" onclick="return confirm('Удалить рейс? Это удалит все билеты на него!')"> Удалить</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2> Проданные билеты</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Пассажир</th>
+                        <th>Паспорт</th>
+                        <th>Маршрут</th>
+                        <th>Время отправления</th>
+                        <th>Цена</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ ticket.ticket_id }}</td>
+                        <td>{{ ticket.last_name }} {{ ticket.first_name }}</td>
+                        <td>{{ ticket.passport_number }}</td>
+                        <td>{{ ticket.departure_city }} → {{ ticket.arrival_city }}</td>
+                        <td>{{ ticket.departure_time }}</td>
+                        <td>{{ ticket.price }} руб.</td>
+                        <td>
+                            <a href="/delete_ticket/{{ ticket.ticket_id }}" class="delete-btn" onclick="return confirm('Удалить билет?')"> Удалить</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-
-
-
-<div class="card">
-    <h2>Популярные направления</h2>
-    <ul style="margin-top: 1rem; list-style: none;">
-        <li style="padding: 0.5rem 0;">🚌 Москва → Санкт-Петербург</li>
-        <li style="padding: 0.5rem 0;">🚌 Москва → Нижний Новгород</li>
-        <li style="padding: 0.5rem 0;">🚌 Казань → Москва</li>
-        <li style="padding: 0.5rem 0;">🚌 Москва → Ярославль</li>
-    </ul>
-</div>
-{% endblock %}
+</body>
+</html>
